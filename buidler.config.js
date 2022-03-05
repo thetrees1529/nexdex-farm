@@ -1,3 +1,5 @@
+const { version } = require("chai");
+
 usePlugin("@nomiclabs/buidler-waffle");
 usePlugin("solidity-coverage");
 
