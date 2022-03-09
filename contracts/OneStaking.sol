@@ -1,9 +1,9 @@
 pragma solidity 0.6.12;
 
-import '@pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/access/Ownable.sol';
+import '@nextechlabs/nexdex-lib/contracts/math/SafeMath.sol';
+import '@nextechlabs/nexdex-lib/contracts/token/BEP20/IBEP20.sol';
+import '@nextechlabs/nexdex-lib/contracts/token/BEP20/SafeBEP20.sol';
+import '@nextechlabs/nexdex-lib/contracts/access/Ownable.sol';
 
 // import "@nomiclabs/buidler/console.sol";
 
@@ -13,7 +13,7 @@ interface IWBNB {
     function withdraw(uint256) external;
 }
 
-contract BnbStaking is Ownable {
+contract OneStaking is Ownable {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
 
@@ -49,7 +49,7 @@ contract BnbStaking is Ownable {
     PoolInfo[] public poolInfo;
     // Info of each user that stakes LP tokens.
     mapping (address => UserInfo) public userInfo;
-    // limit 10 BNB here
+    // limit 10 ONE here
     uint256 public limitAmount = 10000000000000000000;
     // Total allocation poitns. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
@@ -96,7 +96,7 @@ contract BnbStaking is Ownable {
     }
 
     receive() external payable {
-        assert(msg.sender == WBNB); // only accept BNB via fallback from the WBNB contract
+        assert(msg.sender == WBNB); // only accept ONE via fallback from the WBNB contract
     }
 
     // Update admin address by the previous dev.

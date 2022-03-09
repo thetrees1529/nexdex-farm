@@ -1,18 +1,18 @@
 const { expectRevert, time } = require('@openzeppelin/test-helpers');
 const { assert } = require('chai');
-const CakeToken = artifacts.require('CakeToken');
-const BnbStaking = artifacts.require('BnbStaking');
+const NanoXp = artifacts.require('NanoXp');
+const OneStaking = artifacts.require('OneStaking');
 const MockBEP20 = artifacts.require('libs/MockBEP20');
 const WBNB = artifacts.require('libs/WBNB');
 
-contract('BnbStaking.......', async ([alice, bob, admin, dev, minter]) => {
+contract('OneStaking.......', async ([alice, bob, admin, dev, minter]) => {
   beforeEach(async () => {
-    this.rewardToken = await CakeToken.new({ from: minter });
+    this.rewardToken = await NanoXp.new({ from: minter });
     this.lpToken = await MockBEP20.new('LPToken', 'LP1', '1000000', {
       from: minter,
     });
     this.wBNB = await WBNB.new({ from: minter });
-    this.bnbChef = await BnbStaking.new(
+    this.bnbChef = await OneStaking.new(
       this.wBNB.address,
       this.rewardToken.address,
       1000,
@@ -86,7 +86,7 @@ contract('BnbStaking.......', async ([alice, bob, admin, dev, minter]) => {
   });
 
   it('setLimitAmount', async () => {
-    // set limit to 1e-12 BNB
+    // set limit to 1e-12 ONE
     await this.bnbChef.setLimitAmount('1000000', { from: minter });
     await expectRevert(
       this.bnbChef.deposit({ from: alice, value: 100000000 }),

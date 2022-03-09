@@ -1,13 +1,13 @@
 pragma solidity 0.6.12;
 
-import '@pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol';
+import '@nextechlabs/nexdex-lib/contracts/math/SafeMath.sol';
+import '@nextechlabs/nexdex-lib/contracts/token/BEP20/IBEP20.sol';
+import '@nextechlabs/nexdex-lib/contracts/token/BEP20/SafeBEP20.sol';
 
 // import "@nomiclabs/buidler/console.sol";
 
-// SousChef is the chef of new tokens. He can make yummy food and he is a fair guy as well as MasterChef.
-contract SousChef {
+// Player2 is the chef of new tokens. He can make yummy food and he is a fair guy as well as MasterGamer.
+contract Player2 {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
 
@@ -123,7 +123,7 @@ contract SousChef {
     }
 
 
-    // Deposit Syrup tokens to SousChef for Reward allocation.
+    // Deposit Syrup tokens to Player2 for Reward allocation.
     function deposit(uint256 _amount) public {
         require (_amount > 0, 'amount 0');
         UserInfo storage user = userInfo[msg.sender];
@@ -140,7 +140,7 @@ contract SousChef {
         emit Deposit(msg.sender, _amount);
     }
 
-    // Withdraw Syrup tokens from SousChef.
+    // Withdraw Syrup tokens from Player2.
     function withdraw(uint256 _amount) public {
         require (_amount > 0, 'amount 0');
         UserInfo storage user = userInfo[msg.sender];
