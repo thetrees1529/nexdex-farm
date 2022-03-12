@@ -16,6 +16,8 @@ contract LockableToken is ILockableToken, ERC20, AccessControl {
 
     constructor(string memory name, string memory symbol, uint unlockingStartDate_, uint unlockingEndDate_) ERC20(name, symbol) {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        require(unlockingStartDate_ >= block.timestamp);
+        require(unlockingEndDate > unlockingStartDate_);
         unlockingStartDate = unlockingStartDate_;
         unlockingEndDate = unlockingEndDate_;
     }
@@ -52,6 +54,10 @@ contract LockableToken is ILockableToken, ERC20, AccessControl {
     }
 
     function lock(address account, uint amount) external onlyRole(LOCK_ROLE) {
+
+        if(block.timestamp >= unlockingEndDate) {
+            return;
+        }
 
         _transfer(account, address(this), amount);
         uint unlockableBefore = unlockableOf(account);
