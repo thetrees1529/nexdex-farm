@@ -219,8 +219,9 @@ contract MasterGamer is Ownable {
           }
           uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
           uint256 xpReward = multiplier.mul(xpPerBlock).mul(pool.allocPoint).div(totalAllocPoint);
-          xp.mint(devaddr, xpReward.div(10));
-          xp.mint(address(boost), xpReward);
+          xp.mint(devaddr, xpReward.div(10)); // devs
+          xp.mint(address(boost), xpReward); // amount for pools
+          xp.lock(address(boost), xpReward.mul(99).div(100)); // lock 99 %
           pool.accXpPerShare = pool.accXpPerShare.add(xpReward.mul(1e12).div(lpSupply));
           pool.lastRewardBlock = block.number;
         }
