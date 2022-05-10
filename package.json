@@ -1,5 +1,5 @@
 {
-  "name": "PancakeSwap",
+  "name": "NexDex",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,12 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",
     "@openzeppelin/test-helpers": "^0.5.6",
+<<<<<<< HEAD
     "@pancakeswap/pancake-swap-lib": "^0.0.1",
     "hardhat": "^2.9.1",
+=======
+    "@nextechlabs/nexdex-lib": "^0.0.5",
+>>>>>>> 95d14520defee4968a6cae0c6c1b9816c3829ed7
     "truffle": "^5.1.58",
     "truffle-flattener": "^1.4.4"
   },

@@ -1,22 +1,22 @@
 pragma solidity 0.6.12;
 
-import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/access/Ownable.sol';
+import '@nextechlabs/nexdex-lib/contracts/token/BEP20/IBEP20.sol';
+import '@nextechlabs/nexdex-lib/contracts/token/BEP20/SafeBEP20.sol';
+import '@nextechlabs/nexdex-lib/contracts/access/Ownable.sol';
 
-import './MasterChef.sol';
+import './MasterGamer.sol';
 
 contract LotteryRewardPool is Ownable {
     using SafeBEP20 for IBEP20;
 
-    MasterChef public chef;
+    MasterGamer public chef;
     address public adminAddress;
     address public receiver;
     IBEP20 public lptoken;
     IBEP20 public cake;
 
     constructor(
-        MasterChef _chef,
+        MasterGamer _chef,
         IBEP20 _cake,
         address _admin,
         address _receiver
@@ -42,7 +42,7 @@ contract LotteryRewardPool is Ownable {
         emit StartFarming(msg.sender, _pid);
     }
 
-    function  harvest(uint256 _pid) external onlyAdmin {
+    function harvest(uint256 _pid) external onlyAdmin {
         chef.deposit(_pid, 0);
         uint256 balance = cake.balanceOf(address(this));
         cake.safeTransfer(receiver, balance);

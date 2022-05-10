@@ -55,10 +55,6 @@ contract LockableToken is ILockableToken, ERC20, AccessControl {
 
     function lock(address account, uint amount) external onlyRole(LOCK_ROLE) {
 
-        if(block.timestamp >= unlockingEndDate) {
-            return;
-        }
-
         _transfer(account, address(this), amount);
         uint unlockableBefore = unlockableOf(account);
 

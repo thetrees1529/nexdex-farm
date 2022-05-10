@@ -1,10 +1,10 @@
 pragma solidity 0.6.12;
 
-import "@pancakeswap/pancake-swap-lib/contracts/token/BEP20/BEP20.sol";
+import "@nextechlabs/nexdex-lib/contracts/token/BEP20/BEP20.sol";
 
-// CakeToken with Governance.
-contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
+// Xp with Governance.
+contract Xp is BEP20('XP', '1XP') {
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterGamer).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);

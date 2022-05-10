@@ -1,12 +1,12 @@
 pragma solidity 0.6.12;
 
-import "@pancakeswap/pancake-swap-lib/contracts/token/BEP20/BEP20.sol";
+import "@nextechlabs/nexdex-lib/contracts/token/BEP20/BEP20.sol";
 
-import "./CakeToken.sol";
+import "./Xp.sol";
 
-// SyrupBar with Governance.
-contract SyrupBar is BEP20('SyrupBar Token', 'SYRUP') {
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
+// BoostBar with Governance.
+contract BoostBar is BEP20('Experience Boost', 'BOOST') {
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterGamer).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
@@ -18,11 +18,11 @@ contract SyrupBar is BEP20('SyrupBar Token', 'SYRUP') {
     }
 
     // The CAKE TOKEN!
-    CakeToken public cake;
+    Xp public cake;
 
 
     constructor(
-        CakeToken _cake
+        Xp _cake
     ) public {
         cake = _cake;
     }
