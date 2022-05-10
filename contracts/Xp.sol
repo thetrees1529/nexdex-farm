@@ -1,11 +1,112 @@
 pragma solidity 0.6.12;
 
-import "@nextechlabs/nexdex-lib/contracts/token/BEP20/BEP20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "./interfaces/IXP.sol";
 
-// Xp with Governance.
-contract Xp is BEP20('XP', '1XP') {
+struct LockInfo {
+    uint locked;
+    uint owed;
+    uint debt;
+}
+
+// Xp with Governance & lock up.
+contract Xp is IXP, ERC20, AccessControl {
+
+    constructor(uint unlockingStartDate_, uint unlockingEndDate_) ERC20('XP', '1XP') {
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        unlockingStartDate = unlockingStartDate_;
+        unlockingEndDate = unlockingEndDate_;
+    }
+
+    bytes32 public MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public LOCK_ROLE = keccak256("LOCK_ROLE");
+    bytes32 public EARLY_UNLOCK_ROLE = keccak256("EARLY_UNLOCK_ROLE");
+
+    uint public unlockingStartDate;
+    uint public unlockingEndDate;
+
+    mapping(address => LockInfo) _lockInfos;
+
+    function lockOf(address account) external view returns(uint) {
+
+        return _lockInfos[account].locked;
+
+    }
+
+    function unlockableOf(address account) public view returns(uint unlockable) {
+
+        LockInfo storage lockInfo = _lockInfos[account];
+
+        if(block.timestamp < unlockingStartDate) {
+            return 0;
+        }
+
+        uint timeSince = unlockingStartDate - block.timestamp;
+        uint totalLockTime = unlockingEndDate - unlockingStartDate;
+        uint timeUnlocking = timeSince <= totalLockTime ? timeSince : totalLockTime;
+
+        unlockable = (((timeUnlocking * lockInfo.locked) / totalLockTime) + lockInfo.owed) - lockInfo.debt;
+
+    }
+
+    function lock(address account, uint amount) external onlyRole(LOCK_ROLE) {
+
+        _transfer(account, address(this), amount);
+        uint unlockableBefore = unlockableOf(account);
+
+        LockInfo storage lockInfo = _lockInfos[account];
+        lockInfo.locked += amount;
+
+        uint unlockableAfter = unlockableOf(account);
+
+        uint debt = unlockableAfter - unlockableBefore;
+
+        lockInfo.debt += debt;
+
+    }
+
+    function unlock(uint amount) external {
+
+        uint unlockableBefore = unlockableOf(msg.sender);
+
+        require(amount <= unlockableBefore, "Cannot unlock this amount.");
+
+        uint targetUnlockable = unlockableBefore - amount;
+
+        LockInfo storage lockInfo = _lockInfos[msg.sender];
+        lockInfo.locked -= amount;
+
+        uint unlockableAfter = unlockableOf(msg.sender);
+
+        uint owed = targetUnlockable - unlockableAfter;
+
+        lockInfo.owed += owed;
+
+        _transfer(address(this), msg.sender, amount);
+
+    }
+
+    function earlyUnlock(address account, uint amount) external onlyRole(EARLY_UNLOCK_ROLE) {
+
+        _transfer(address(this), account, amount);
+        uint unlockableBefore = unlockableOf(account);
+
+        LockInfo storage lockInfo = _lockInfos[account];
+        lockInfo.locked -= amount;
+
+        uint unlockableAfter = unlockableOf(account);
+
+        uint owed = unlockableAfter - unlockableBefore;
+
+        lockInfo.owed += owed;
+
+    }
+
+    // Cake below
+
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterGamer).
-    function mint(address _to, uint256 _amount) public onlyOwner {
+    function mint(address _to, uint256 _amount) external onlyRole(MINTER_ROLE) {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
     }

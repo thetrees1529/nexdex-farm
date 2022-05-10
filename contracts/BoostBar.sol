@@ -18,22 +18,22 @@ contract BoostBar is BEP20('Experience Boost', 'BOOST') {
     }
 
     // The CAKE TOKEN!
-    Xp public cake;
+    Xp public xp;
 
 
     constructor(
-        Xp _cake
+        Xp _xp
     ) public {
-        cake = _cake;
+        xp = _xp;
     }
 
-    // Safe cake transfer function, just in case if rounding error causes pool to not have enough CAKEs.
+    // Safe xp transfer function, just in case if rounding error causes pool to not have enough CAKEs.
     function safeCakeTransfer(address _to, uint256 _amount) public onlyOwner {
-        uint256 cakeBal = cake.balanceOf(address(this));
-        if (_amount > cakeBal) {
-            cake.transfer(_to, cakeBal);
+        uint256 xpBal = xp.balanceOf(address(this));
+        if (_amount > xpBal) {
+            xp.transfer(_to, xpBal);
         } else {
-            cake.transfer(_to, _amount);
+            xp.transfer(_to, _amount);
         }
     }
 
