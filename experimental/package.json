@@ -1,0 +1,20 @@
+{
+  "name": "experimental",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.6",
+    "@openzeppelin/contracts": "^4.6.0",
+    "chai": "^4.3.6",
+    "chai-almost": "^1.0.1",
+    "chai-as-promised": "^7.1.1",
+    "hardhat": "^2.9.6"
+  }
+}
