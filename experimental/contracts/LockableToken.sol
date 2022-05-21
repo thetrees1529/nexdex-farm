@@ -21,6 +21,8 @@ interface ILockableToken {
     function LOCK_ROLE() external view returns(bytes32);
     function EARLY_UNLOCK_ROLE() external view returns(bytes32);
 
+    function mint(address account, uint amount) external;
+
     function getUnlockSchedule() external view returns(UnlockSchedule memory);
 
     function getLocked(address account) external view returns(uint);
@@ -41,26 +43,26 @@ contract LockableToken is ILockableToken, ERC20, AccessControl {
         _unlockSchedule = unlockSchedule;
     }
 
-    bytes32 public MINTER_ROLE = keccak256("MINTER_ROLE");
-    bytes32 public LOCK_ROLE = keccak256("LOCK_ROLE");
-    bytes32 public EARLY_UNLOCK_ROLE = keccak256("EARLY_UNLOCK_ROLE");
+    bytes32 public override MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public override LOCK_ROLE = keccak256("LOCK_ROLE");
+    bytes32 public override EARLY_UNLOCK_ROLE = keccak256("EARLY_UNLOCK_ROLE");
 
     UnlockSchedule private _unlockSchedule;
     mapping(address => LockInfo) private _lockInfos;
 
-    function mint(address account, uint amount) external onlyRole(MINTER_ROLE) {
+    function mint(address account, uint amount) external override onlyRole(MINTER_ROLE) {
         _mint(account, amount);
     }
 
-    function getUnlockSchedule() external view returns(UnlockSchedule memory) {
+    function getUnlockSchedule() external override view returns(UnlockSchedule memory) {
         return _unlockSchedule;
     }
 
-    function getLocked(address account) external view returns(uint) {
+    function getLocked(address account) external override view returns(uint) {
         return _lockInfos[account].locked;
     }
 
-    function getUnlockable(address account) public view returns(uint) {
+    function getUnlockable(address account) public override view returns(uint) {
         if(block.timestamp < _unlockSchedule.startDate) {
             return 0;
         }
@@ -74,11 +76,11 @@ contract LockableToken is ILockableToken, ERC20, AccessControl {
         return (lockInfo.locked * unlockingFor) / totalUnlockTime;
     }
 
-    function unlock() external {
+    function unlock() external override {
         _unlock(msg.sender);
     }
 
-    function earlyUnlock(address account, uint amount) external onlyRole(EARLY_UNLOCK_ROLE) {
+    function earlyUnlock(address account, uint amount) external override onlyRole(EARLY_UNLOCK_ROLE) {
         _unlock(account);
         _lockInfos[account].locked -= amount;
         _mint(account, amount);
@@ -92,7 +94,7 @@ contract LockableToken is ILockableToken, ERC20, AccessControl {
         _mint(account, toUnlock);
     }
 
-    function lock(address account, uint amount) external onlyRole(LOCK_ROLE) {
+    function lock(address account, uint amount) external override onlyRole(LOCK_ROLE) {
         _lockInfos[account].locked += amount;
         _burn(account, amount);
     }
